@@ -1,0 +1,19 @@
+{
+    "name": "gustavorattmann/dashboard",
+    "description": "Treinamento com PHP puro e Orientação a Objetos",
+    "type": "project",
+    "require": {
+        "vlucas/phpdotenv": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gustavo Rattmann",
+            "email": "gustavo_rattmann@hotmail.com.br"
+        }
+    ]
+}
