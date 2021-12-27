@@ -49,9 +49,24 @@
             return $this->route_collection->where($request_type, $pattern);
         }
 
-        protected function dispatch($route, $namespace = "App\\")
+        protected function getValues($pattern, $positions)
         {
-            return $this->dispatcher->dispatch($route->callback, $route->uri, $namespace);
+            $result = [];
+
+            $pattern = array_filter(explode('/', $pattern));
+
+            foreach ($pattern as $key => $value) {
+                if (in_array($key, $positions)) {
+                    $result[array_search($key, $positions)] = $value;
+                }
+            }
+
+            return $result;
+        }
+
+        protected function dispatch($route, $params, $namespace = "App\\")
+        {
+            return $this->dispatcher->dispatch($route->callback, $params, $namespace);
         }
 
         protected function notFound()
@@ -64,7 +79,9 @@
             $route = $this->find($request->method(), $request->uri());
 
             if ($route) {
-                return $this->dispatch($route);
+                $params = $route->callback['values'] ? $this->getValues($request->uri(), $route->callback['values']) : [];  
+
+                return $this->dispatch($route, $params);
             } else {
                 return $this->notFound();
             }

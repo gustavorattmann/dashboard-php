@@ -84,13 +84,13 @@
 
         public function hasFile($key)
         {
-            return isset($this->file[$key]);
+            return isset($this->files[$key]);
         }
 
         public function file($key)
         {
-            if (isset($this->file[$key])) {
-                return $this->file[$key];
+            if (isset($this->files[$key])) {
+                return $this->files[$key];
             }
         }
     }
