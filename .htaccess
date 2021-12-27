@@ -1,6 +1,9 @@
-RewriteEngine On
-RewriteBase /
+DirectoryIndex public/index.php
 
-RewriteCond %{THE_REQUEST} public/([^\s?]*) [NC]
-RewriteRule ^ %1 [L,NE,R=302]
-RewriteRule ^((?!public/).*)$ treinamento/dashboard/public/$1 [L,NC]
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /treinamento/dashboard/public
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([A-Za-z0-9\\\/\-]+)$ index.php?uri=$1 [QSA,L]
