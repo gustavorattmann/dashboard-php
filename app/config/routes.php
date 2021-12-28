@@ -1,18 +1,12 @@
 <?php
 
-    $router->get('/', function() {
-        echo "Página inicial";
-    });
-    
-    $router->get('/contatos', function() {
-        echo "Página de contatos";
-        die();
+    // registro as rotas
+    $router->get('/', function () {
+        return 'Olá mundo';
     });
 
-    $router->get('/teste/{teste}', function($teste) {
-        echo "Agora foi recebido da URI o parâmetro: " . $teste;
+    $router->get('/ola-{nome}', function ($params) {
+        return 'Olá ' . $params[1];
     });
-    
-    $router->post('/contatos/store', "Controller@store");
 
 ?>
