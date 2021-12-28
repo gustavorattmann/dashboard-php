@@ -2,89 +2,91 @@
 
     namespace Src;
 
-    use Src\Request;
-    use Src\Dispatcher;
-    use Src\RouteColletion;
-
     class Router
     {
-        protected $route_collection;
+        // Variável responsável por armazenar as rotas registradas
+        private $routes = [];
+        // Variável responsável por armazenar o método atual
+        private $method;
+        // Variável responsável por armazenar a url atual
+        private $uri;
+        // Variável responsável por armazenar os parâmetros da url
+        private $params;
 
-        public function __construct()
+        // Injeção do método e url atual na classe
+        public function __construct($method, $uri)
         {
-            $this->route_collection = new RouteCollection;
-            $this->dispatcher = new Dispatcher;
+            $this->method = $method;
+            $this->uri = $uri;
         }
 
-        public function get($pattern, $callback)
+        // Atalho para a função add para as rotas do método tipo get
+        public function get(string $route, callable $action)
         {
-            $this->route_collection->add('get', $pattern, $callback);
-
-            return $this;
+            $this->add('GET', $route, $action);
         }
 
-        public function post($pattern, $callback)
+        // Atalho para a função add para as rotas do método tipo get
+        public function post(string $route, callable $action)
         {
-            $this->route_collection->add('post', $pattern, $callback);
-
-            return $this;
+            $this->add('POST', $route, $action);
         }
 
-        public function put($pattern, $callback)
+        // Passa a ação da rota para um array com método e rota atual, para evitar duplicidade
+        // Antes de passar a ação para o array, é verificado se a rota atual e método existem, se não existir é criado o array
+        public function add(string $method, string $route, callable $action)
         {
-            $this->route_collection->add('put', $pattern, $callback);
-
-            return $this;
+            $this->routes[$method][$route] = $action;
         }
 
-        public function delete($pattern, $callback)
+        public function getParams()
         {
-            $this->route_collection->add('delete', $pattern, $callback);
-
-            return $this;
+            return $this->params;
         }
 
-        public function find($request_type, $pattern)
+        // Função para encontrar a rota
+        public function handler()
         {
-            return $this->route_collection->where($request_type, $pattern);
-        }
+            // Verifica se o método existe, se não existir, retorna falso
+            if (empty($this->routes[$this->method])) {
+                return false;
+            }
 
-        protected function getValues($pattern, $positions)
-        {
-            $result = [];
+            // Verifica se a url foi registrada para o método solicitado e retorna a ação
+            if (isset($this->routes[$this->method][$this->uri])) {
+                return $this->routes[$this->method][$this->uri];
+            }
 
-            $pattern = array_filter(explode('/', $pattern));
+            foreach ($this->routes[$this->method] as $route => $action) {
+                $result = $this->checkUrl($route, $this->uri);
 
-            foreach ($pattern as $key => $value) {
-                if (in_array($key, $positions)) {
-                    $result[array_search($key, $positions)] = $value;
+                if ($result >= 1) {
+                    return $action;
                 }
             }
 
-            return $result;
+            // Se não achar a rota, retorna falso
+            return false;
         }
 
-        protected function dispatch($route, $params, $namespace = "App\\")
+        public function checkUrl(string $route, $uri)
         {
-            return $this->dispatcher->dispatch($route->callback, $params, $namespace);
-        }
+            preg_match_all('/\{([^\}]*)\}/', $route, $variables);
 
-        protected function notFound()
-        {
-            return header("HTTP/1.0 404 Not Found", true, 404);
-        }
+            $regex = str_replace('/', '\/', $route);
 
-        public function resolve($request)
-        {
-            $route = $this->find($request->method(), $request->uri());
-
-            if ($route) {
-                $params = $route->callback['values'] ? $this->getValues($request->uri(), $route->callback['values']) : [];  
-
-                return $this->dispatch($route, $params);
-            } else {
-                return $this->notFound();
+            foreach ($variables[0] as $key => $variable) {
+                $replacement = '([a-zA-Z0-9\-\_\ ]+)';
+                $regex = str_replace($variable, $replacement, $regex);
             }
+
+            $regex = preg_replace('/{([a-zA-Z]+)}/', '([a-zA-Z0-9+])', $regex);
+
+            $result = preg_match('/^' . $regex . '$/', $uri, $params);
+
+            $this->params = $params;
+
+            return $result;
         }
     }
 
