@@ -3,8 +3,6 @@
     namespace App\Controller;
 
     use Core\Controller;
-    
-    // use App\View\Pages\User\Index;
 
     class UserController extends Controller
     {
