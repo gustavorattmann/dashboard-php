@@ -16,9 +16,6 @@
     require_once "app/config/config.php";
 
     try {
-        // echo "Teste bootstrap";
-        // die();
-
         require_once CONFIG_PATH . 'routes.php';
     } catch (\Exception $error) {
         echo $error->getMessage();
