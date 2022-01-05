@@ -9,11 +9,4 @@
 
     $router->dispatch();
 
-    // var_dump($router);
-    // die();
-
-    // if ($router->error()) {
-    //     $router->
-    // }
-
 ?>
