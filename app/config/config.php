@@ -1,5 +1,10 @@
 <?php
 
+    # Definições globais
+    define('NAME', $_ENV['APP_NAME']);
+    define('DEBUG', $_ENV['APP_DEBUG']);
+    define('URI', $_ENV['APP_URI']);
+
     # Definição dos diretórios
     define('DS', DIRECTORY_SEPARATOR);
     define('BASE_PATH', dirname(dirname(__DIR__)) . DS);
