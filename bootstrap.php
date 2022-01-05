@@ -1,7 +1,9 @@
 <?php
 
     require_once "vendor/autoload.php";
-    require_once "app/config/config.php";
+
+    use App\Controller\UserController;
+    session_start();
 
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
     $dotenv->load();
@@ -11,9 +13,7 @@
         ini_set('display_errors', true);
     }
 
-    use App\Controller\UserController;
-
-    session_start();
+    require_once "app/config/config.php";
 
     try {
         // echo "Teste bootstrap";
