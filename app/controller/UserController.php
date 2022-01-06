@@ -2,19 +2,21 @@
 
     namespace App\Controller;
 
-    use Core\Controller;
+    use Core\View;
 
-    class UserController extends Controller
+    class UserController
     {
         public function index()
         {
+            $view = new View();
+            
             $data = [
                 "nome" => "Gustavo",
                 "sobrenome" => "Rattmann"
             ];
 
-            $this->render('partials/header');
-            $this->render('user/index', $data);
+            $view->render('partials/header');
+            $view->render('user/index', $data);
         }
     }
 
