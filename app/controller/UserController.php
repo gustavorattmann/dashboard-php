@@ -2,9 +2,10 @@
 
     namespace App\Controller;
 
+    use Core\Controller;
     use Core\View;
 
-    class UserController
+    class UserController extends Controller
     {
         public function index()
         {
@@ -15,8 +16,11 @@
                 "sobrenome" => "Rattmann"
             ];
 
-            $view->render('partials/header');
-            $view->render('user/index', $data);
+            $view->element('footer');
+            $view->element('header');
+            $view->content('user/index');
+            $view->set($data);
+            $view->render();
         }
     }
 
