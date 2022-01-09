@@ -4,19 +4,53 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ title }}</title>
+        <title>
+            {{ title }}
+            {% if data.title|length > 0 %}
+                | {{ data.title }}
+            {% endif %}
+        </title>
+        <meta name="description" content="
+            {% if data.description|length > 0 %}
+                {{ data.description }}
+            {% endif %}
+        ">
+        <meta name="keywords" content="
+            {% if data.keywords|length > 0 %}
+                {{ data.keywords }}
+            {% endif %}
+        ">
+        <meta name="author" content="
+            {% if data.author|length > 0 %}
+                {{ data.author }}
+            {% endif %}
+        ">
+        {% if assets|length > 0 %}
+            {% for css in assets.css %}
+                <link rel="stylesheet" type="text/css" href="public/css/{{ css }}">
+            {% endfor %}
+        {% endif %}
     </head>
     <body>
-        {% if (header != null) %}
-            {% include(header) %}
-        {% endif %}
+        {% for element in elements %}
+            {% if element == 'header.html.twig' %}
+                {% include("partials/#{element}") %}
+            {% endif %}
+        {% endfor %}
         <main>
-            {% if (content != null) %}
+            {% if content != '' %}
                 {% include(content) %}
             {% endif %}
         </main>
-        {% if (footer != null) %}
-            {% include(footer) %}
+        {% for element in elements %}
+            {% if element == 'footer.html.twig' %}
+                {% include("partials/#{element}") %}
+            {% endif %}
+        {% endfor %}
+        {% if assets|length > 0 %}
+            {% for js in assets.js %}
+                <script src="public/js/{{ js }}"></script>
+            {% endfor %}
         {% endif %}
     </body>
 </html>
